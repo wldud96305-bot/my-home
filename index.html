@@ -3,38 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>wldud96305-bot | Design Archive</title>
+    <title>JEE-BYEOP | Design Archive</title>
     <style>
-        /* 기본 설정 */
+        /* 1. 기본 설정 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Helvetica', Arial, sans-serif;
             background-color: #000000;
             color: #ffffff;
-            padding: 5vw; /* 화면 크기에 비례하는 여백 */
+            padding: 5vw;
             line-height: 1.2;
+            padding-bottom: 100px; /* 하단바를 위한 여백 */
         }
 
-        /* 상단 네비게이션 */
+        /* 2. 상단 네비게이션 */
         header {
-            position: fixed; /* 화면에 고정 */
+            position: fixed;
             top: 40px;
             left: 5vw;
             right: 5vw;
             display: flex;
             justify-content: space-between;
             z-index: 100;
-            mix-blend-mode: difference; /* 배경색에 따라 글자색 반전 (간지 포인트) */
+            mix-blend-mode: difference; /* 배경에 따라 색상 반전 */
         }
         .logo { font-weight: bold; text-transform: uppercase; font-size: 1.2rem; }
         nav a { text-decoration: none; color: inherit; margin-left: 20px; font-size: 0.9rem; }
 
-        /* 메인 그리드 시스템 (레퍼런스 스타일) */
+        /* 3. 메인 그리드 레이아웃 */
         main {
             margin-top: 150px;
             display: grid;
-            grid-template-columns: repeat(12, 1fr); /* 12컬럼 시스템 */
-            gap: 60px 20px;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 80px 20px;
         }
 
         .work-item {
@@ -43,42 +44,91 @@
             margin-bottom: 40px;
         }
 
-        /* 이미지 컨테이너 */
         .img-box {
             width: 100%;
             overflow: hidden;
-            background-color: #000000;
+            background-color: #1a1a1a;
             margin-bottom: 15px;
         }
         .img-box img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            display: block;
             transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
         }
         .work-item:hover img { transform: scale(1.05); }
 
-        /* 작품 정보 (얇은 선) */
+        /* 작품 정보 (선 색상을 흰색으로 변경) */
         .info {
-            border-top: 0.5px solid #000;
-            padding-top: 8px;
+            border-top: 0.5px solid #ffffff; /* 검은 배경이므로 흰색 선 */
+            padding-top: 10px;
             display: flex;
             justify-content: space-between;
             font-size: 0.85rem;
             letter-spacing: -0.02em;
         }
 
-        /* 개별 아이템 크기 조절 (레퍼런스처럼 불규칙하게) */
-        .wide { grid-column: span 8; }  /* 큰 이미지 (12칸 중 8칸 차지) */
-        .narrow { grid-column: span 4; } /* 작은 이미지 (12칸 중 4칸 차지) */
-        .medium { grid-column: span 6; } /* 중간 이미지 (12칸 중 6칸 차지) */
-        .offset-1 { grid-column-start: 2; } /* 왼쪽에서 1칸 띄우고 시작 */
+        /* 그리드 크기 조절 */
+        .wide { grid-column: span 8; }
+        .narrow { grid-column: span 4; }
+        .medium { grid-column: span 6; }
+        .offset-1 { grid-column-start: 2; }
+
+        /* 4. 하단 고정 메뉴바 스타일 */
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.8); /* 반투명 블랙 */
+            backdrop-filter: blur(10px);
+            border-top: 0.5px solid #333;
+            display: flex;
+            justify-content: space-between;
+            padding: 20px 5vw;
+            z-index: 1000;
+            /* 애니메이션 효과 */
+            transform: translateY(100%);
+            animation: slideUp 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
+            animation-delay: 0.5s;
+        }
+
+        @keyframes slideUp {
+            to { transform: translateY(0); }
+        }
+
+        .bottom-nav-links { display: flex; gap: 40px; }
+        .bottom-link {
+            text-decoration: none;
+            color: #fff;
+            font-size: 11px;
+            font-weight: 500;
+            letter-spacing: 0.05em;
+            position: relative;
+        }
+
+        /* 하단 링크 호버 효과 */
+        .bottom-link::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 1px;
+            background-color: #fff;
+            transition: width 0.4s ease;
+        }
+        .bottom-link:hover::after { width: 100%; }
+
+        .copyright { font-size: 11px; color: #666; }
 
         /* 모바일 대응 */
         @media (max-width: 768px) {
             main { display: block; }
             .work-item { margin-bottom: 60px; }
             header { top: 20px; }
+            .bottom-nav { flex-direction: column; gap: 10px; text-align: center; }
         }
     </style>
 </head>
@@ -93,50 +143,37 @@
     </header>
 
     <main id="works">
-        <!-- 1. 큰 이미지 (왼쪽 정렬) -->
+        <!-- 프로젝트 리스트 -->
         <a href="project-01.html" class="work-item wide">
-            <div class="img-box">
-                <img src="./images/image1.png" alt="Work 01">
-            </div>
-            <div class="info">
-                <span>PROJECT TITLE 01</span>
-                <span>2024</span>
-            </div>
+            <div class="img-box"><img src="./images/image1.png" alt="Work 01"></div>
+            <div class="info"><span>PROJECT TITLE 01</span><span>2024</span></div>
         </a>
 
-        <!-- 2. 작은 이미지 (오른쪽 배치) -->
         <a href="project-02.html" class="work-item narrow">
-            <div class="img-box">
-                <img src="./images/image2.png" alt="Work 02">
-            </div>
-            <div class="info">
-                <span>PROJECT TITLE 02</span>
-                <span>2024</span>
-            </div>
+            <div class="img-box"><img src="./images/image2.png" alt="Work 02"></div>
+            <div class="info"><span>PROJECT TITLE 02</span><span>2024</span></div>
         </a>
 
-        <!-- 3. 중간 이미지 (가운데쯤 배치) -->
         <a href="#" class="work-item medium offset-1">
-            <div class="img-box" style="aspect-ratio: 1/1.2;"> <!-- 세로가 긴 이미지 -->
-                <img src="./images/image3.png" alt="Work 03">
-            </div>
-            <div class="info">
-                <span>PROJECT TITLE 03</span>
-                <span>2023</span>
-            </div>
+            <div class="img-box" style="aspect-ratio: 1/1.2;"><img src="./images/image3.png" alt="Work 03"></div>
+            <div class="info"><span>PROJECT TITLE 03</span><span>2023</span></div>
         </a>
 
-        <!-- 4. 또 다른 중간 이미지 -->
         <a href="#" class="work-item medium">
-            <div class="img-box">
-                <img src="./images/image2.png" alt="Work 04">
-            </div>
-            <div class="info">
-                <span>PROJECT TITLE 04</span>
-                <span>2023</span>
-            </div>
+            <div class="img-box"><img src="./images/image2.png" alt="Work 04"></div>
+            <div class="info"><span>PROJECT TITLE 04</span><span>2023</span></div>
         </a>
     </main>
+
+    <!-- 하단 메뉴바 (추가된 부분) -->
+    <footer class="bottom-nav">
+        <div class="bottom-nav-links">
+            <a href="mailto:이메일주소" class="bottom-link">CONTACT</a>
+            <a href="#" class="bottom-link">INSTAGRAM</a>
+            <a href="#" class="bottom-link">BEHANCE</a>
+        </div>
+        <div class="copyright">© 2025 JEE-BYEOP.</div>
+    </footer>
 
 </body>
 </html>
