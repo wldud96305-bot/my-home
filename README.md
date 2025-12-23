@@ -1,5 +1,3 @@
-# wldud96305-bot.github.io
-My portfolio website
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -12,8 +10,8 @@ My portfolio website
             margin: 0;
             padding: 40px;
             font-family: 'Helvetica', sans-serif;
-            background-color: #fff;
-            color: #000;
+            background-color: #8a0f0fff;
+            color: #5f2929ff;
             line-height: 1.6;
         }
 

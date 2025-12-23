@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project 01 | wldud96305-bot</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: #fff;
+            color: #000;
+            padding: 5vw;
+        }
+
+        /* 상단 네비게이션 (메인과 통일) */
+        header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 100px;
+        }
+        .back-btn { text-decoration: none; color: #000; font-size: 0.9rem; font-weight: bold; }
+        .logo { font-weight: bold; text-transform: uppercase; }
+
+        /* 프로젝트 헤드 (제목과 설명) */
+        .project-header {
+            margin-bottom: 100px;
+            max-width: 800px; /* 설명문이 너무 길게 퍼지지 않도록 */
+        }
+        .project-title {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 30px;
+            letter-spacing: -0.03em;
+        }
+        .project-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            border-top: 0.5px solid #000;
+            padding-top: 20px;
+            margin-bottom: 40px;
+            font-size: 0.9rem;
+        }
+        .project-description {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            color: #333;
+        }
+
+        /* 이미지 리스트 (세로로 길게 배치) */
+        .project-images {
+            display: flex;
+            flex-direction: column;
+            gap: 40px; /* 이미지 사이 간격 */
+        }
+        .project-images img {
+            width: 100%;
+            height: auto;
+            background-color: #f5f5f5;
+        }
+
+        footer {
+            margin-top: 150px;
+            padding-bottom: 50px;
+            text-align: center;
+        }
+        .next-project { text-decoration: none; color: #000; font-size: 1.5rem; font-weight: bold; }
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            .project-title { font-size: 2rem; }
+            .project-meta { grid-template-columns: 1fr; gap: 10px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <a href="index.html" class="back-btn">← BACK</a>
+        <div class="logo">wldud96305-bot</div>
+    </header>
+
+    <main>
+        <section class="project-header">
+            <h1 class="project-title">RE-FORMATTING SPACE</h1>
+            
+            <div class="project-meta">
+                <div><strong>Category:</strong> Graphic Design</div>
+                <div><strong>Year:</strong> 2024</div>
+            </div>
+
+            <p class="project-description">
+                여기에 프로젝트에 대한 설명을 적으세요. 어떤 의도로 만들었는지, 
+                어떤 과정을 거쳤는지 자세히 적을수록 좋습니다. 레퍼런스 사이트처럼 
+                간결하고 정갈한 문체를 추천합니다.
+            </p>
+        </section>
+
+        <section class="project-images">
+            <!-- 프로젝트 이미지들을 차례대로 넣으세요 -->
+            <img src="./images/project1-detail1.jpg" alt="Detail 01">
+            <img src="./images/project1-detail2.jpg" alt="Detail 02">
+        </section>
+    </main>
+
+    <footer>
+        <a href="project-02.html" class="next-project">Next Project →</a>
+    </footer>
+
+</body>
+</html>

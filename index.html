@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>wldud96305-bot | Design Archive</title>
+    <style>
+        /* 기본 설정 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Helvetica', Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+            padding: 5vw; /* 화면 크기에 비례하는 여백 */
+            line-height: 1.2;
+        }
+
+        /* 상단 네비게이션 */
+        header {
+            position: fixed; /* 화면에 고정 */
+            top: 40px;
+            left: 5vw;
+            right: 5vw;
+            display: flex;
+            justify-content: space-between;
+            z-index: 100;
+            mix-blend-mode: difference; /* 배경색에 따라 글자색 반전 (간지 포인트) */
+        }
+        .logo { font-weight: bold; text-transform: uppercase; font-size: 1.2rem; }
+        nav a { text-decoration: none; color: inherit; margin-left: 20px; font-size: 0.9rem; }
+
+        /* 메인 그리드 시스템 (레퍼런스 스타일) */
+        main {
+            margin-top: 150px;
+            display: grid;
+            grid-template-columns: repeat(12, 1fr); /* 12컬럼 시스템 */
+            gap: 60px 20px;
+        }
+
+        .work-item {
+            text-decoration: none;
+            color: inherit;
+            margin-bottom: 40px;
+        }
+
+        /* 이미지 컨테이너 */
+        .img-box {
+            width: 100%;
+            overflow: hidden;
+            background-color: #000000;
+            margin-bottom: 15px;
+        }
+        .img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
+        }
+        .work-item:hover img { transform: scale(1.05); }
+
+        /* 작품 정보 (얇은 선) */
+        .info {
+            border-top: 0.5px solid #000;
+            padding-top: 8px;
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            letter-spacing: -0.02em;
+        }
+
+        /* 개별 아이템 크기 조절 (레퍼런스처럼 불규칙하게) */
+        .wide { grid-column: span 8; }  /* 큰 이미지 (12칸 중 8칸 차지) */
+        .narrow { grid-column: span 4; } /* 작은 이미지 (12칸 중 4칸 차지) */
+        .medium { grid-column: span 6; } /* 중간 이미지 (12칸 중 6칸 차지) */
+        .offset-1 { grid-column-start: 2; } /* 왼쪽에서 1칸 띄우고 시작 */
+
+        /* 모바일 대응 */
+        @media (max-width: 768px) {
+            main { display: block; }
+            .work-item { margin-bottom: 60px; }
+            header { top: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">jee-byeop</div>
+        <nav>
+            <a href="#works">WORKS</a>
+            <a href="#about">ABOUT</a>
+        </nav>
+    </header>
+
+    <main id="works">
+        <!-- 1. 큰 이미지 (왼쪽 정렬) -->
+        <a href="project-01.html" class="work-item wide">
+            <div class="img-box">
+                <img src="./images/image1.png" alt="Work 01">
+            </div>
+            <div class="info">
+                <span>PROJECT TITLE 01</span>
+                <span>2024</span>
+            </div>
+        </a>
+
+        <!-- 2. 작은 이미지 (오른쪽 배치) -->
+        <a href="project-02.html" class="work-item narrow">
+            <div class="img-box">
+                <img src="./images/image2.png" alt="Work 02">
+            </div>
+            <div class="info">
+                <span>PROJECT TITLE 02</span>
+                <span>2024</span>
+            </div>
+        </a>
+
+        <!-- 3. 중간 이미지 (가운데쯤 배치) -->
+        <a href="#" class="work-item medium offset-1">
+            <div class="img-box" style="aspect-ratio: 1/1.2;"> <!-- 세로가 긴 이미지 -->
+                <img src="./images/image3.png" alt="Work 03">
+            </div>
+            <div class="info">
+                <span>PROJECT TITLE 03</span>
+                <span>2023</span>
+            </div>
+        </a>
+
+        <!-- 4. 또 다른 중간 이미지 -->
+        <a href="#" class="work-item medium">
+            <div class="img-box">
+                <img src="./images/image2.png" alt="Work 04">
+            </div>
+            <div class="info">
+                <span>PROJECT TITLE 04</span>
+                <span>2023</span>
+            </div>
+        </a>
+    </main>
+
+</body>
+</html>
