@@ -21,6 +21,7 @@
             padding: 40px 4vw; display: flex;
             justify-content: space-between; align-items: flex-start;
             z-index: 1000; mix-blend-mode: difference;
+            transition: 0.5s ease;
         }
         .logo { font-weight: bold; text-transform: uppercase; font-size: 1.4rem; text-decoration: none; color: #fff; }
         .nav-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
@@ -31,7 +32,7 @@
         }
         .filter-btn.active { opacity: 1; border-bottom: 1px solid #fff; }
 
-        /* 3. 메인 그리드 (웹 기준 5열) */
+        /* 3. 메인 그리드 (블러 효과 대상) */
         main {
             margin-top: 150px;
             padding: 0 4vw 100px 4vw;
@@ -39,92 +40,113 @@
             grid-template-columns: repeat(5, 1fr);
             grid-auto-flow: dense;
             gap: 60px 25px;
+            transition: filter 0.6s ease, transform 0.6s ease; /* 블러 애니메이션 */
         }
+        
+        /* 상세페이지 열렸을 때 메인 화면 효과 */
+        body.modal-open main {
+            filter: blur(0.25px); /* 뒷배경 흐리게 */
+            transform: scale(1.01); /* 살짝 멀어지는 효과 */
+            pointer-events: none; /* 클릭 방지 */
+        }
+        body.modal-open header { filter: blur(1px); opacity: 1; }
 
-        /* 웹용 사이즈 클래스 */
-        .work-item { text-decoration: none; color: inherit; display: block; position: relative; }
+        /* 4. 워크 아이템 스타일 */
+        /* 마우스 커서를 올렸을 때 (컬러로 복구 + 확대) */
+.work-item:hover .img-box img {
+    filter: grayscale(0%); /* 원래 색상으로 보임 */
+}
+
+/* 활성화된 이미지만 살짝 확대 효과 유지 */
+.work-item:hover .img-box img.active { 
+    transform: scale(1.03); 
+}
         .size-1x1 { grid-column: span 1; }
         .size-2x2 { grid-column: span 2; grid-row: span 2; }
         .size-wide { grid-column: span 2; }
         .size-tall { grid-column: span 1; grid-row: span 2; }
 
-        /* 이미지 박스 공통 */
-        .img-box { 
-            width: 100%; 
-            position: relative; 
-            overflow: hidden; 
-            margin-bottom: 15px; 
-            background-color: #111;
-        }
-        
-        /* 웹에서의 이미지 비율 고정 */
+        .img-box { width: 100%; position: relative; overflow: hidden; margin-bottom: 15px; background-color: #111; }
         .size-1x1 .img-box { aspect-ratio: 1 / 1.2; }
         .size-2x2 .img-box { aspect-ratio: 1 / 1.1; }
         .size-wide .img-box { aspect-ratio: 1.6 / 1; }
         .size-tall .img-box { aspect-ratio: 1 / 1.8; }
 
-        .img-box img { 
-            width: 100%; height: 100%; 
-            object-fit: cover; 
-            display: block; 
-            position: absolute; 
-            top: 0; left: 0;
-            opacity: 0; 
-            transition: opacity 1.2s ease-in-out; 
+        /* 이미지 박스 내 이미지 기본 설정 (흑백) */
+.img-box img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover; 
+    display: block; 
+    position: absolute; 
+    top: 0; 
+    left: 0; 
+    opacity: 0; 
+    /* 흑백 처리 및 부드러운 전환 효과 추가 */
+    filter: grayscale(100%); 
+    transition: opacity 1.2s ease-in-out, filter 0.6s ease, transform 0.6s ease; 
+}
+
+/* 활성화된 이미지 */
+.img-box img.active { 
+    opacity: 1; 
+    position: relative; 
+}
+
+        /* 5. 상세 오버레이 ( Frosted Glass 효과 ) */
+        #detail-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.4); /* 이미지와 비슷한 반투명 검정 */
+            backdrop-filter: blur(25px); /* 핵심: 블러 효과 */
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 2000;
+            display: none; /* 평소엔 숨김 */
+            overflow-y: auto;
+            opacity: 0;
+            transition: opacity 0.5s ease;
         }
-        .img-box img.active { opacity: 1; position: relative; }
 
-        .work-item:hover .img-box img.active { transform: scale(1.03); transition: transform 0.6s ease, opacity 1.2s ease; }
+        #detail-overlay.active { display: block; opacity: 1; }
 
-        /* 4. 정보 레이아웃 */
-        .info {
-            border-top: 1.5px solid #fff;
-            padding-top: 12px;
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.85rem;
-            font-weight: bold;
+        .detail-content {
+            max-width: 1000px; margin: 100px auto; padding: 40px;
+            transform: translateY(30px); transition: transform 0.6s ease;
         }
-        .cat-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+        #detail-overlay.active .detail-content { transform: translateY(0); }
 
-        /* 5. 모바일 최적화 (2열 Masonry + 랜덤 비율 적용 공간) */
-        @media (max-width: 1024px) {
-            main { grid-template-columns: repeat(3, 1fr); }
+        .close-btn {
+            position: fixed; top: 40px; right: 4vw; font-size: 2rem;
+            cursor: pointer; font-weight: bold; z-index: 2100; color: #fff;
         }
 
+        /* 상세 페이지 내의 이미지/글 배치 */
+        .detail-imgs { display: flex; flex-direction: column; gap: 40px; margin-bottom: 60px; }
+        .detail-imgs img { width: 100%; height: auto; border: 0.5px solid #333; }
+        .detail-text h2 { font-size: 3rem; margin-bottom: 20px; text-transform: uppercase; }
+        .detail-text p { font-size: 1.1rem; line-height: 1.6; color: #ccc; margin-bottom: 20px; }
+
+        /* 6. 모바일 대응 */
         @media (max-width: 768px) {
-            main { 
-                display: block; 
-                column-count: 2; 
-                column-gap: 20px; 
-                margin-top: 120px; 
-            }
-            .work-item { 
-                display: inline-block; 
-                width: 100%; 
-                margin-bottom: 40px; 
-                grid-column: auto !important; 
-                grid-row: auto !important;
-            }
-            /* 모바일에서 자바스크립트로 주입한 랜덤 비율을 사용하도록 설정 */
-            .img-box { 
-                aspect-ratio: var(--mobile-ratio, 1/1.2) !important; 
-            }
-            .info { font-size: 0.7rem; }
-        }
+            main { display: block; column-count: 2; column-gap: 20px; margin-top: 120px; }
+            /* 마우스 커서를 올렸을 때 (컬러로 복구 + 확대) */
+.work-item:hover .img-box img {
+    filter: grayscale(0%); /* 원래 색상으로 보임 */
+}
 
-        .bottom-nav {
-            position: fixed; bottom: 0; left: 0; width: 100%;
-            padding: 20px 4vw; background: rgba(0,0,0,0.8);
-            backdrop-filter: blur(10px); display: flex;
-            justify-content: space-between; font-size: 11px; z-index: 900;
+/* 활성화된 이미지만 살짝 확대 효과 유지 */
+.work-item:hover .img-box img.active { 
+    transform: scale(1.03); 
+}
+            .img-box { aspect-ratio: var(--mobile-ratio, 1/1.2) !important; }
+            .detail-text h2 { font-size: 2rem; }
+            .detail-content { padding: 20px; margin: 60px auto; }
         }
     </style>
 </head>
 <body>
 
     <header>
-        <a href="index.html" class="logo">JEE-BYEOP</a>
+        <a href="#" class="logo" onclick="location.reload()">JEE-BYEOP</a>
         <div class="nav-right">
             <div class="category-filters">
                 <button class="filter-btn active" data-filter="all">ALL</button>
@@ -137,29 +159,47 @@
 
     <main id="works-grid"></main>
 
-    <footer class="bottom-nav">
-        <div>WORKS / ABOUT</div>
-        <div style="color: #666;">© 2025 JEE-BYEOP.</div>
+    <!-- 상세 페이지 오버레이 (Blur 효과 적용) -->
+    <div id="detail-overlay">
+        <div class="close-btn">&times;</div>
+        <div class="detail-content">
+            <div id="detail-dynamic-content">
+                <!-- 여기에 JS가 내용을 채워 넣습니다 -->
+            </div>
+        </div>
+    </div>
+
+    <footer style="position:fixed; bottom:20px; left:4vw; font-size:11px; color:#666; z-index:100;">
+        © 2025 JEE-BYEOP.
     </footer>
 
     <script>
         const catColors = { graphic: "#00FF66", editorial: "#FF3300", space: "#0066FF" };
 
         const projectData = [
-            { title: "PROJECT 01", category: "graphic", year: "2024", link: "project-01.html", images: ["./images/image1.png", "./images/image2.png"] },
-            { title: "PROJECT 02", category: "editorial", year: "2024", link: "project-02.html", images: ["./images/image2.png", "./images/image3.png"] },
-            { title: "PROJECT 03", category: "space", year: "2023", link: "#", images: ["./images/image3.png", "./images/image1.png"] },
-            { title: "PROJECT 04", category: "graphic", year: "2023", link: "#", images: ["./images/image1.png", "./images/image2.png"] },
-            { title: "PROJECT 05", category: "editorial", year: "2025", link: "#", images: ["./images/image2.png", "./images/image3.png"] },
-            { title: "PROJECT 06", category: "space", year: "2025", link: "#", images: ["./images/image3.png", "./images/image1.png"] }
+            { 
+                title: "PROJECT 01", category: "graphic", year: "2024", 
+                images: ["./images/image1.png", "./images/image2.png"],
+                description: "이 작업은 첫 번째 프로젝트의 상세 설명입니다. 그래픽 디자인의 실험적인 형태를 탐구하며, 다양한 질감과 색상의 조화를 보여줍니다."
+            },
+            { 
+                title: "PROJECT 02", category: "editorial", year: "2024", 
+                images: ["./images/image2.png", "./images/image3.png"],
+                description: "편집 디자인 아카이브입니다. 책의 구조와 레이아웃이 독자에게 어떻게 읽히는지에 대한 고민을 담았습니다."
+            },
+            { 
+                title: "PROJECT 03", category: "space", year: "2023", 
+                images: ["./images/image3.png", "./images/image1.png"],
+                description: "공간을 채우는 물리적인 그래픽 요소들에 대한 기록입니다."
+            }
+            // 프로젝트를 더 추가하세요...
         ];
 
         const webSizes = ['size-1x1', 'size-2x2', 'size-wide', 'size-tall'];
-        
-        // 모바일에서 사용할 랜덤 비율 리스트 (가로/세로)
-        const mobileRatios = ['1/0.8', '1/1', '1/1.2', '1/1.5', '1/1.7']; 
-
+        const mobileRatios = ['1/0.8', '1/1', '1/1.2', '1/1.5'];
         const grid = document.getElementById('works-grid');
+        const overlay = document.getElementById('detail-overlay');
+        const overlayBody = document.getElementById('detail-dynamic-content');
 
         function renderWorks(filter = 'all') {
             grid.innerHTML = '';
@@ -167,14 +207,9 @@
             const shuffledData = [...filteredData].sort(() => Math.random() - 0.5);
 
             shuffledData.forEach((work) => {
-                const item = document.createElement('a');
-                item.href = work.link;
+                const item = document.createElement('div');
+                item.className = `work-item ${webSizes[Math.floor(Math.random() * webSizes.length)]}`;
                 
-                // 1. 웹용 랜덤 사이즈 결정
-                const randomSize = webSizes[Math.floor(Math.random() * webSizes.length)];
-                item.className = `work-item ${randomSize}`;
-                
-                // 2. 여러 이미지 생성
                 let imgsHtml = work.images.map((imgSrc, idx) => 
                     `<img src="${imgSrc}" class="${idx === 0 ? 'active' : ''}" alt="${work.title}">`
                 ).join('');
@@ -187,26 +222,52 @@
                     </div>
                 `;
 
-                // 3. 모바일용 랜덤 비율 주입 (핵심!)
+                // 모바일 비율 주입
                 const randomRatio = mobileRatios[Math.floor(Math.random() * mobileRatios.length)];
                 item.querySelector('.img-box').style.setProperty('--mobile-ratio', randomRatio);
 
-                grid.appendChild(item);
+                // 클릭 시 상세페이지 열기 이벤트
+                item.onclick = () => openDetail(work);
 
-                if (work.images.length > 1) {
-                    startAutoSlide(item);
-                }
+                grid.appendChild(item);
+                if (work.images.length > 1) startAutoSlide(item);
             });
         }
 
+        // 상세페이지 열기
+        function openDetail(work) {
+            document.body.classList.add('modal-open'); // 메인 화면 블러 처리 클래스 추가
+            overlay.classList.add('active');
+
+            let allImagesHtml = work.images.map(img => `<img src="${img}">`).join('');
+            
+            overlayBody.innerHTML = `
+                <div class="detail-text">
+                    <p style="font-size:0.8rem; margin-bottom:10px;">${work.category.toUpperCase()} / ${work.year}</p>
+                    <h2>${work.title}</h2>
+                    <p>${work.description}</p>
+                </div>
+                <div class="detail-imgs">${allImagesHtml}</div>
+            `;
+            
+            overlay.scrollTop = 0; // 스크롤 맨 위로
+        }
+
+        // 상세페이지 닫기
+        function closeDetail() {
+            document.body.classList.remove('modal-open');
+            overlay.classList.remove('active');
+        }
+
+        document.querySelector('.close-btn').onclick = closeDetail;
+        overlay.onclick = (e) => { if (e.target === overlay) closeDetail(); };
+
         function startAutoSlide(item) {
             const imgs = item.querySelectorAll('img');
-            if (imgs.length <= 1) return;
-            
             let currentIdx = 0;
             const speed = 2500 + Math.random() * 2500; 
-
             setInterval(() => {
+                if (document.body.classList.contains('modal-open')) return; // 모달 열려있으면 멈춤
                 imgs[currentIdx].classList.remove('active');
                 currentIdx = (currentIdx + 1) % imgs.length;
                 imgs[currentIdx].classList.add('active');
