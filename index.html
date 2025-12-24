@@ -5,175 +5,223 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JEE-BYEOP | Design Archive</title>
     <style>
-        /* 1. 기본 설정 */
+        /* 1. 기본 스타일 */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Helvetica', Arial, sans-serif;
-            background-color: #000000;
-            color: #ffffff;
-            padding: 5vw;
+            background-color: #000;
+            color: #fff;
             line-height: 1.2;
-            padding-bottom: 100px; /* 하단바를 위한 여백 */
+            overflow-x: hidden;
         }
 
         /* 2. 상단 네비게이션 */
         header {
-            position: fixed;
-            top: 40px;
-            left: 5vw;
-            right: 5vw;
-            display: flex;
-            justify-content: space-between;
-            z-index: 100;
-            mix-blend-mode: difference; /* 배경에 따라 색상 반전 */
+            position: fixed; top: 0; left: 0; width: 100%;
+            padding: 40px 4vw; display: flex;
+            justify-content: space-between; align-items: flex-start;
+            z-index: 1000; mix-blend-mode: difference;
         }
-        .logo { font-weight: bold; text-transform: uppercase; font-size: 1.2rem; }
-        nav a { text-decoration: none; color: inherit; margin-left: 20px; font-size: 0.9rem; }
+        .logo { font-weight: bold; text-transform: uppercase; font-size: 1.4rem; text-decoration: none; color: #fff; }
+        .nav-right { display: flex; flex-direction: column; align-items: flex-end; gap: 10px; }
+        .category-filters { display: flex; gap: 15px; }
+        .filter-btn {
+            background: none; border: none; color: #fff; font-size: 0.8rem;
+            cursor: pointer; opacity: 0.4; transition: 0.3s; font-weight: bold;
+        }
+        .filter-btn.active { opacity: 1; border-bottom: 1px solid #fff; }
 
-        /* 3. 메인 그리드 레이아웃 */
+        /* 3. 메인 그리드 (웹 기준 5열) */
         main {
             margin-top: 150px;
+            padding: 0 4vw 100px 4vw;
             display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 80px 20px;
+            grid-template-columns: repeat(5, 1fr);
+            grid-auto-flow: dense;
+            gap: 60px 25px;
         }
 
-        .work-item {
-            text-decoration: none;
-            color: inherit;
-            margin-bottom: 40px;
-        }
+        /* 웹용 사이즈 클래스 */
+        .work-item { text-decoration: none; color: inherit; display: block; position: relative; }
+        .size-1x1 { grid-column: span 1; }
+        .size-2x2 { grid-column: span 2; grid-row: span 2; }
+        .size-wide { grid-column: span 2; }
+        .size-tall { grid-column: span 1; grid-row: span 2; }
 
-        .img-box {
-            width: 100%;
-            overflow: hidden;
-            background-color: #1a1a1a;
-            margin-bottom: 15px;
+        /* 이미지 박스 공통 */
+        .img-box { 
+            width: 100%; 
+            position: relative; 
+            overflow: hidden; 
+            margin-bottom: 15px; 
+            background-color: #111;
         }
-        .img-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-            transition: transform 0.8s cubic-bezier(0.2, 1, 0.3, 1);
-        }
-        .work-item:hover img { transform: scale(1.05); }
+        
+        /* 웹에서의 이미지 비율 고정 */
+        .size-1x1 .img-box { aspect-ratio: 1 / 1.2; }
+        .size-2x2 .img-box { aspect-ratio: 1 / 1.1; }
+        .size-wide .img-box { aspect-ratio: 1.6 / 1; }
+        .size-tall .img-box { aspect-ratio: 1 / 1.8; }
 
-        /* 작품 정보 (선 색상을 흰색으로 변경) */
+        .img-box img { 
+            width: 100%; height: 100%; 
+            object-fit: cover; 
+            display: block; 
+            position: absolute; 
+            top: 0; left: 0;
+            opacity: 0; 
+            transition: opacity 1.2s ease-in-out; 
+        }
+        .img-box img.active { opacity: 1; position: relative; }
+
+        .work-item:hover .img-box img.active { transform: scale(1.03); transition: transform 0.6s ease, opacity 1.2s ease; }
+
+        /* 4. 정보 레이아웃 */
         .info {
-            border-top: 0.5px solid #ffffff; /* 검은 배경이므로 흰색 선 */
-            padding-top: 10px;
+            border-top: 1.5px solid #fff;
+            padding-top: 12px;
             display: flex;
             justify-content: space-between;
             font-size: 0.85rem;
-            letter-spacing: -0.02em;
+            font-weight: bold;
+        }
+        .cat-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; }
+
+        /* 5. 모바일 최적화 (2열 Masonry + 랜덤 비율 적용 공간) */
+        @media (max-width: 1024px) {
+            main { grid-template-columns: repeat(3, 1fr); }
         }
 
-        /* 그리드 크기 조절 */
-        .wide { grid-column: span 8; }
-        .narrow { grid-column: span 4; }
-        .medium { grid-column: span 6; }
-        .offset-1 { grid-column-start: 2; }
-
-        /* 4. 하단 고정 메뉴바 스타일 */
-        .bottom-nav {
-            position: fixed;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.8); /* 반투명 블랙 */
-            backdrop-filter: blur(10px);
-            border-top: 0.5px solid #333;
-            display: flex;
-            justify-content: space-between;
-            padding: 20px 5vw;
-            z-index: 1000;
-            /* 애니메이션 효과 */
-            transform: translateY(100%);
-            animation: slideUp 0.8s cubic-bezier(0.2, 1, 0.3, 1) forwards;
-            animation-delay: 0.5s;
-        }
-
-        @keyframes slideUp {
-            to { transform: translateY(0); }
-        }
-
-        .bottom-nav-links { display: flex; gap: 40px; }
-        .bottom-link {
-            text-decoration: none;
-            color: #fff;
-            font-size: 11px;
-            font-weight: 500;
-            letter-spacing: 0.05em;
-            position: relative;
-        }
-
-        /* 하단 링크 호버 효과 */
-        .bottom-link::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 1px;
-            background-color: #fff;
-            transition: width 0.4s ease;
-        }
-        .bottom-link:hover::after { width: 100%; }
-
-        .copyright { font-size: 11px; color: #666; }
-
-        /* 모바일 대응 */
         @media (max-width: 768px) {
-            main { display: block; }
-            .work-item { margin-bottom: 60px; }
-            header { top: 20px; }
-            .bottom-nav { flex-direction: column; gap: 10px; text-align: center; }
+            main { 
+                display: block; 
+                column-count: 2; 
+                column-gap: 20px; 
+                margin-top: 120px; 
+            }
+            .work-item { 
+                display: inline-block; 
+                width: 100%; 
+                margin-bottom: 40px; 
+                grid-column: auto !important; 
+                grid-row: auto !important;
+            }
+            /* 모바일에서 자바스크립트로 주입한 랜덤 비율을 사용하도록 설정 */
+            .img-box { 
+                aspect-ratio: var(--mobile-ratio, 1/1.2) !important; 
+            }
+            .info { font-size: 0.7rem; }
+        }
+
+        .bottom-nav {
+            position: fixed; bottom: 0; left: 0; width: 100%;
+            padding: 20px 4vw; background: rgba(0,0,0,0.8);
+            backdrop-filter: blur(10px); display: flex;
+            justify-content: space-between; font-size: 11px; z-index: 900;
         }
     </style>
 </head>
 <body>
 
     <header>
-        <div class="logo">jee-byeop</div>
-        <nav>
-            <a href="#works">WORKS</a>
-            <a href="#about">ABOUT</a>
-        </nav>
+        <a href="index.html" class="logo">JEE-BYEOP</a>
+        <div class="nav-right">
+            <div class="category-filters">
+                <button class="filter-btn active" data-filter="all">ALL</button>
+                <button class="filter-btn" data-filter="graphic">GRAPHIC</button>
+                <button class="filter-btn" data-filter="editorial">EDITORIAL</button>
+                <button class="filter-btn" data-filter="space">SPACE</button>
+            </div>
+        </div>
     </header>
 
-    <main id="works">
-        <!-- 프로젝트 리스트 -->
-        <a href="project-01.html" class="work-item wide">
-            <div class="img-box"><img src="./images/image1.png" alt="Work 01"></div>
-            <div class="info"><span>PROJECT TITLE 01</span><span>2024</span></div>
-        </a>
+    <main id="works-grid"></main>
 
-        <a href="project-02.html" class="work-item narrow">
-            <div class="img-box"><img src="./images/image2.png" alt="Work 02"></div>
-            <div class="info"><span>PROJECT TITLE 02</span><span>2024</span></div>
-        </a>
-
-        <a href="#" class="work-item medium offset-1">
-            <div class="img-box" style="aspect-ratio: 1/1.2;"><img src="./images/image3.png" alt="Work 03"></div>
-            <div class="info"><span>PROJECT TITLE 03</span><span>2023</span></div>
-        </a>
-
-        <a href="#" class="work-item medium">
-            <div class="img-box"><img src="./images/image2.png" alt="Work 04"></div>
-            <div class="info"><span>PROJECT TITLE 04</span><span>2023</span></div>
-        </a>
-    </main>
-
-    <!-- 하단 메뉴바 (추가된 부분) -->
     <footer class="bottom-nav">
-        <div class="bottom-nav-links">
-            <a href="mailto:이메일주소" class="bottom-link">CONTACT</a>
-            <a href="#" class="bottom-link">INSTAGRAM</a>
-            <a href="#" class="bottom-link">BEHANCE</a>
-        </div>
-        <div class="copyright">© 2025 JEE-BYEOP.</div>
+        <div>WORKS / ABOUT</div>
+        <div style="color: #666;">© 2025 JEE-BYEOP.</div>
     </footer>
 
+    <script>
+        const catColors = { graphic: "#00FF66", editorial: "#FF3300", space: "#0066FF" };
+
+        const projectData = [
+            { title: "PROJECT 01", category: "graphic", year: "2024", link: "project-01.html", images: ["./images/image1.png", "./images/image2.png"] },
+            { title: "PROJECT 02", category: "editorial", year: "2024", link: "project-02.html", images: ["./images/image2.png", "./images/image3.png"] },
+            { title: "PROJECT 03", category: "space", year: "2023", link: "#", images: ["./images/image3.png", "./images/image1.png"] },
+            { title: "PROJECT 04", category: "graphic", year: "2023", link: "#", images: ["./images/image1.png", "./images/image2.png"] },
+            { title: "PROJECT 05", category: "editorial", year: "2025", link: "#", images: ["./images/image2.png", "./images/image3.png"] },
+            { title: "PROJECT 06", category: "space", year: "2025", link: "#", images: ["./images/image3.png", "./images/image1.png"] }
+        ];
+
+        const webSizes = ['size-1x1', 'size-2x2', 'size-wide', 'size-tall'];
+        
+        // 모바일에서 사용할 랜덤 비율 리스트 (가로/세로)
+        const mobileRatios = ['1/0.8', '1/1', '1/1.2', '1/1.5', '1/1.7']; 
+
+        const grid = document.getElementById('works-grid');
+
+        function renderWorks(filter = 'all') {
+            grid.innerHTML = '';
+            let filteredData = filter === 'all' ? projectData : projectData.filter(d => d.category === filter);
+            const shuffledData = [...filteredData].sort(() => Math.random() - 0.5);
+
+            shuffledData.forEach((work) => {
+                const item = document.createElement('a');
+                item.href = work.link;
+                
+                // 1. 웹용 랜덤 사이즈 결정
+                const randomSize = webSizes[Math.floor(Math.random() * webSizes.length)];
+                item.className = `work-item ${randomSize}`;
+                
+                // 2. 여러 이미지 생성
+                let imgsHtml = work.images.map((imgSrc, idx) => 
+                    `<img src="${imgSrc}" class="${idx === 0 ? 'active' : ''}" alt="${work.title}">`
+                ).join('');
+
+                item.innerHTML = `
+                    <div class="img-box">${imgsHtml}</div>
+                    <div class="info">
+                        <span><span class="cat-dot" style="background-color: ${catColors[work.category]}"></span>${work.title}</span>
+                        <span>${work.year}</span>
+                    </div>
+                `;
+
+                // 3. 모바일용 랜덤 비율 주입 (핵심!)
+                const randomRatio = mobileRatios[Math.floor(Math.random() * mobileRatios.length)];
+                item.querySelector('.img-box').style.setProperty('--mobile-ratio', randomRatio);
+
+                grid.appendChild(item);
+
+                if (work.images.length > 1) {
+                    startAutoSlide(item);
+                }
+            });
+        }
+
+        function startAutoSlide(item) {
+            const imgs = item.querySelectorAll('img');
+            if (imgs.length <= 1) return;
+            
+            let currentIdx = 0;
+            const speed = 2500 + Math.random() * 2500; 
+
+            setInterval(() => {
+                imgs[currentIdx].classList.remove('active');
+                currentIdx = (currentIdx + 1) % imgs.length;
+                imgs[currentIdx].classList.add('active');
+            }, speed);
+        }
+
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.onclick = () => {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                renderWorks(btn.dataset.filter);
+            };
+        });
+
+        renderWorks();
+    </script>
 </body>
 </html>
